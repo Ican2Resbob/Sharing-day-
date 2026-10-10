@@ -158,6 +158,7 @@ nav button:disabled{opacity:.3;cursor:default}
   <button id="prev">← Previous</button>
   <div class="dots" id="dots"></div>
   <button id="next">Next →</button>
+  <button id="fullscreen">⛶ Fullscreen</button>
 </nav>
 
 <script>
@@ -183,6 +184,38 @@ document.addEventListener('keydown', e => {
   if (e.key === 'ArrowLeft') go(cur - 1);
 });
 go((parseInt(location.hash.slice(1)) || 1) - 1);
+
+
+
+/* ---- Fullscreen ---- */
+const fullscreenBtn = document.getElementById('fullscreen');
+
+function updateFullscreenButton() {
+  const isFullscreen = !!document.fullscreenElement;
+
+  fullscreenBtn.textContent = isFullscreen
+    ? '⛶ Exit Fullscreen'
+    : '⛶ Fullscreen';
+}
+
+fullscreenBtn.addEventListener('click', async () => {
+  try {
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+    } else {
+      await document.documentElement.requestFullscreen();
+    }
+  } catch (error) {
+    console.error('Fullscreen error:', error);
+  }
+});
+
+document.addEventListener(
+  'fullscreenchange',
+  updateFullscreenButton
+);
+
+updateFullscreenButton();
 
 // ---- Copy buttons ----
 document.querySelectorAll('.copy').forEach(b => b.onclick = () => {
